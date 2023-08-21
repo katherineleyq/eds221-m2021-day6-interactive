@@ -124,3 +124,69 @@ library(tidyverse)
 library(here)
 library(janitor)
 ```
+
+```{r}
+wb_indicators <- read_csv(here("data", "wb_indicators.csv"), na = c("..", ""))
+```
+
+```{r}
+# melting year columns
+wb_indicators_long <- wb_indicators %>%
+  pivot_longer(cols = `2001 [YR2001]`:`2020 [YR2020]`,
+               names_to = 'year',
+               values_to = 'indicator_value')
+```
+
+```{r}
+# separating new year column, then drop year_chr
+wb_indicators_clean <- wb_indicators_long %>%
+  separate(col = year,
+           into = c("year", "year_chr"),
+           sep = " ") %>% 
+  dplyr::select(-`year_chr`, -`Country Code`, -`Series Code`)
+  
+```
+
+```{r}
+# for wb_indicators_clean, 'Series Name' has multiple variables in one column.
+# you can use unique() to see all the unique elements within column
+unique(wb_indicators_clean$`Series Name`)
+```
+
+```{r}
+# to clean up the above
+# drop_na() would delete every row with NA in Series Name so use it sparingly
+wb_indicators_tidy <- wb_indicators_clean %>% 
+  tidyr::drop_na(`Series Name`) %>% 
+  tidyr::pivot_wider(names_from = `Series Name`,
+                     values_from = indicator_value)
+```
+
+```{r}
+# cleaning up column names, turn year from charactor to numeric
+
+# one way, but it's bad because it's based on position
+# names(wb_indicators_tidy) <- c("country", 
+#                                "year", 
+#                                "access_clean_fuels_pp",
+#                                "access_electricity_pp",
+#                                "co2_emissions_kt",
+#                                "fossil_fuel_cons_pt",
+#                                "water_stress")
+wb_indicators_tidy_final <- wb_indicators_tidy %>% 
+  dplyr::rename(country = "Country Name",
+                access_clean_fuels_pp = "Access to clean fuels and technologies for cooking (% of population)",
+                access_electricity_pp = "Access to electricity (% of population)",
+                co2_emissions_kt = "CO2 emissions (kt)",
+                fossil_fuel_cons_pt = "Fossil fuel energy consumption (% of total)",
+                water_stress = "Level of water stress: freshwater withdrawal as a proportion of available freshwater resources") %>% 
+  dplyr::mutate(year = as.numeric(year))
+```
+
+```{r}
+# let's make a chart with our new tidy data
+ggplot(data = wb_indicators_tidy_final, 
+       aes(x = year, y = co2_emissions_kt)) +
+         geom_line(aes(color = country)) +
+  theme(legend.position = "none")
+```

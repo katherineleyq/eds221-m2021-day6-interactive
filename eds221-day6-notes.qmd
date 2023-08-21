@@ -1,0 +1,118 @@
+---
+title: "eds221-day6-activity1"
+format: html
+editor: visual
+execute:
+    warning: FALSE
+---
+
+```{r}
+library(tidyverse)
+```
+
+## Warm Up
+
+Write code for:
+
+"brown bear, brown bear, what do you see? I see a red bird looking at me"
+
+"red bird, red bird, what do you see? I see a yellow duck looking at me"
+
+"yellow duck, yellow duck, what do you see? I see a blue horse looking at me"
+
+```{r}
+# my answer: 
+vec <- c("brown bear", "red bird", "yellow duck", "blue horse")
+
+for (i in seq_along(vec)) {
+  print(paste(vec[i],
+              ",",
+              vec[i],
+              ",",
+              "what do you see? I see a",
+              vec[i],
+              "looking at me"))
+}
+```
+
+```{r}
+# right answer
+
+animals <- c("brown bear", "red bird", "yellow duck", "blue horse")
+
+for (i in 1:(length(animals) - 1)) {
+  print(paste(animals[i], animals[i],
+              "what do you see? I see a",
+              animals[i+1],
+              "look at me."))
+}
+```
+
+# Tidy Data Notes
+
+Tidy data is a predictable way of organizing data
+
+1.  Each variable is a column
+2.  Each observation is a row
+3.  Each cell contains a single value
+
+Variable: a characteristic that is being measured, counted or described with data
+
+Observation: a single "data point" for which the measure, count or description of one or more variables is recorded.
+
+Value: the recorded measure, count, or description of a variable
+
+## TidyR
+
+1.  tidyr::pivot_longer() = gather columns (convert from wide to long format)
+2.  tidyr::pivot_wider() = spread columns (convert from long to wide format)
+3.  tidyr::separate() = separate elements in a single column into multiple columns, using a separator you specify, so that each variable is in a single column
+
+### pivot_longer() example
+
+| dog_name | week_1 | week_2 | week_3 |
+|----------|--------|--------|--------|
+| teddy    | 20     | 21     | 18     |
+| khora    | 17     | 24     | 25     |
+
+```{r}
+# I don't want to make dogs df, but it's the above data frame
+# dogs_longer <- dogs %>%
+#   tidyr::pivot_longer(week_1:week_3,
+#                      names_to = week,
+#                      values_to = miles)
+```
+
+### pivot_wider() example
+
+| world     | variable   | value   |
+|-----------|------------|---------|
+| Tattooine | population | 200,000 |
+| Endor     | population | 43,000  |
+| Tattooine | radius     | 3,182.4 |
+| Endor     | radius     | 2,986.1 |
+
+```{r}
+# example
+# planets_long <- planets %>%
+#  tidyr::pivot_wider(names_from = variable,
+#                     values_from = value)
+```
+
+### tidyr::separate()
+
+| name           | height | mass  | hair_color |
+|----------------|--------|-------|------------|
+| Luke Skywalker | 172    | 77.0  | blond      |
+| C-3PO          | 167    | 75.0  | NA         |
+| R2-D2          | 96     | 32.0  | NA         |
+| Darth Vader    | 202    | 136.0 | none       |
+| Leia Organa    | 150    | 49.0  | brown      |
+
+```{r}
+# example
+starwars %>%
+  separate(col = name,
+           into = c("first_name", "last_name"),
+           sep = " ")
+```

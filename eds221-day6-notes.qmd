@@ -116,3 +116,11 @@ starwars %>%
            into = c("first_name", "last_name"),
            sep = " ")
 ```
+
+# Day 6 Interactive Session 1
+
+```{r}
+library(tidyverse)
+library(here)
+library(janitor)
+```

@@ -190,3 +190,129 @@ ggplot(data = wb_indicators_tidy_final,
          geom_line(aes(color = country)) +
   theme(legend.position = "none")
 ```
+
+# Interactive Session: Afternoon
+
+R vs Python resources:
+
+<https://pandas.pydata.org/pandas-docs/stable/getting_started/comparison/comparison_with_r.html>
+
+## Dplyr Wrangling: filter()
+
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+library(lterdatasampler)
+```
+
+```{r}
+# look for an exact match
+penguins_biscoe <- penguins %>% 
+  filter(island == "Biscoe")
+
+# or
+
+penguins_2007 <- penguins %>% 
+  filter(year == 2007)
+```
+
+```{r}
+# conditional
+adelie_torgersen <- penguins %>% 
+  filter(species == "Adelie" & island == "Torgersen")
+
+# or
+# adelie_torgersen <- penguins %>% 
+#   filter(species == "Adelie", island == "Torgersen")
+```
+
+```{r}
+# Create a subset from penguins that only contains Gentoo penguins observed in 2008
+
+gentoo_2008 <- penguins %>% 
+  filter(species == "Gentoo" & year == 2008)
+```
+
+```{r}
+# "or" statements
+# Create a subset that contains Gentoos and Adelies
+
+gentoo_adelie <- penguins %>% 
+  filter(species == "Gentoo" | species == "Adelie")
+```
+
+```{r}
+# Create a subset that contains observations where island is Dream OR the year is 2009
+
+dream_or_2009 <- penguins %>% 
+  filter(island == "Dream" | year == 2009)
+```
+
+Let's look at a new dataset: pie_crab
+
+```{r}
+View(pie_crab)
+```
+
+```{r}
+# create ggplot of water temp vs crab size
+water_temp_vs_size <- ggplot(pie_crab, aes(x = water_temp, y = size)) +
+  geom_point()
+water_temp_vs_size
+```
+
+```{r}
+# keep observations for sites NIB, ZI, DB, JC
+
+# way to do it:
+# pie_sites_1 <- pie_crab %>% 
+#   filter(site == c("NIB", "ZI", "DB", "JC"))
+# it goes through each observation, to see if it matches NIB first, then ZI, then the rest of the vector
+
+# right way to do it. %in% is a no order specific way to filter it
+
+pie_sites_2 <- pie_crab %>% 
+  filter(site %in% c("NIB", "ZI", "DB", "JC"))
+
+# to check
+unique(pie_sites_2$site)
+```
+
+```{r}
+# Create a subset using the %in% operator that includes sites PIE, ZI, NIB, BB, and CC
+
+pie_crab %>% 
+  filter(site %in% c("PIE", "ZI", "NIB", "BB", "CC"))
+```
+
+Excluding filter statements
+
+```{r}
+# exluding filter statements
+# != (asks is this NOT equal to that value?)
+
+exclude_zi <- pie_crab %>% 
+  filter(site != "ZI")
+```
+
+```{r}
+# What if I want to exclude sites "BB", "CC", and "PIE"?
+exclude_bb_cc_pie <- pie_crab %>% 
+  filter(!site %in% c("BB", "CC", "PIE"))
+
+unique(exclude_bb_cc_pie$site)
+```
+
+```{r}
+# Create a subset from pie_crab that only contains observations from NIB, CC, and ZI, for crabs with carapace size exceeding 13 mm
+
+crabs_large <- pie_crab %>%
+  filter(site %in% c("NIB", "CC", "ZI"),
+         size > 13)
+```
+
+## Dplyr wrangling: select()
+
+```{r}
+# selecting columns
+```

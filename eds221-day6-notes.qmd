@@ -364,7 +364,7 @@ crabs_awesome <- pie_crab %>%
   mutate(name = "Teddy is awesome")
 ```
 
-## group_by() 
+## group_by()
 
 ```{r}
 mean_size_by_site <- pie_crab %>% 
